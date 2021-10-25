@@ -8,7 +8,11 @@ from dash.exceptions import PreventUpdate
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('profile.html')
+
+@app.route('/profile.html')
+def home():
+    return render_template('profile.html')
 
 @app.route('/index.html')
 def transporte():
