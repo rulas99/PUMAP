@@ -2,15 +2,25 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_leaflet as dl
-
-import server
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
-#from flask import session
+
+import server
+from flask import session
 
 from dash_apps.auxiliar_functions.here_api import hereRequestRoutes
 
 def create_layout():
+
+    url = "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+    attribution = "<a href=https://www.google.com/maps/@24,-101.4,3274426m/data=!3m1!1e3/>Google Maps</a>"
+
+    mapa = dl.Map([dl.TileLayer(url=url, maxZoom=20, attribution=attribution),  
+                 dl.LayerGroup(id="routes", children=[]),
+                 dl.LocateControl(options={'locateOptions': {'enableHighAccuracy': True}})],
+                 id="map", style={'width': '100%', 'height': '560px', 'margin': "auto", "display": "block"},
+                 zoom=13.5, center=(19.32,-99.186)
+                 )
 
     origen = dcc.Dropdown(
             id="dropdown-map_update",
@@ -50,14 +60,14 @@ def create_layout():
 
                                 ], no_gutters=True, justify='center'),
 
-                        dbc.Row([dbc.Col([html.Div(id="graph-map",
+                        dbc.Row([dbc.Col([html.Div([mapa], id="graph-map",
                                                   style={'padding': '3px 3px 3px 3px', 'text-align': 'center','background': None, 
                                                          'margin': '2px 2px 2px 2px','border':'1px gray solid',
                                                          'border-radius' : '7px'})],sm=10),
 
                                 dbc.Col([html.Div([html.H4('Detalles:')],id="Info",
-                                                   style={'padding': '3px 0px 3px 3px', 'text-align': 'left','background': None, 
-                                                          'margin': '2px 10px 2px 10px','border':'1px gray solid',
+                                                   style={'padding': '3px 5px 3px 3px', 'text-align': 'left','background': None, 
+                                                          'margin': '2px 10px 2px 10px','border':'1px gray solid', 'height': '568px',
                                                           'border-radius' : '7px'})],sm=2)
 
                                 ], no_gutters=True, justify='center')
@@ -65,30 +75,12 @@ def create_layout():
 
     return layout
 
-@server.app_dash.callback(
-    Output("graph-map", "children"), 
-    [Input("dropdown-map_update", "value")])
-def update_bar_chart(value):
-    url = "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
-    attribution = "<a href=https://www.google.com/maps/@24,-101.4,3274426m/data=!3m1!1e3/>Google Maps</a>"
-
-    fig = dl.Map([dl.TileLayer(url=url, maxZoom=20, attribution=attribution),  
-                 dl.LayerGroup(id="routes", children=[]),
-                 dl.LocateControl(options={'locateOptions': {'enableHighAccuracy': True}})],
-                 id="map", style={'width': '100%', 'height': '560px', 'margin': "auto", "display": "block"},
-                 zoom=13.5, center=(19.32,-99.186)
-                 )
-
-    layout = html.Div([fig,html.Div(id="text")])
-
-    return layout
-
-
 @server.app_dash.callback(Output("routes", "children"), [Input("map", "location_lat_lon_acc")])
 def update_location(location):
     if location:
         ubi = location[0], location[1]
-
+        session['ubi'] = ubi
+        
         poly = hereRequestRoutes(ubi,[19.32471,-99.18775])
 
         iconUrl = "/static/assets/paws.png"
