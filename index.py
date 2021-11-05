@@ -8,27 +8,35 @@ from dash.exceptions import PreventUpdate
 
 @app.route('/')
 def index():
-    return render_template('profile.html')
-
-@app.route('/profile.html')
-def home():
-    return render_template('profile.html')
-
-@app.route('/index.html')
-def transporte():
     return render_template('index.html')
 
-@app.route('/login.html')
-def login():
-    return render_template('login.html')
+@app.route('/PUMAPS_Comida.html')
+def comida():
+    return render_template('PUMAPS_Comida.html')
 
-@app.route('/register.html')
-def register():
-    return render_template('register.html')
+@app.route('/index.html')
+def home():
+    return render_template('index.html')
 
-@app.route('/table.html')
-def table():
-    return render_template('table.html')
+@app.route('/PUMAPS_Deportes.html')
+def deportes():
+    return render_template('PUMAPS_Deportes.html')
+
+@app.route('/PUMAPS_FI.html')
+def fi():
+    return render_template('PUMAPS_FI.html')
+
+@app.route('/PUMAPS_Salud.html')
+def salud():
+    return render_template('PUMAPS_Salud.html')
+
+@app.route('/PUMAPS_Transporte.html')
+def transporte():
+    return render_template('PUMAPS_Transporte.html')
+
+@app.route('/PUMAPS_Turisticos.html')
+def turisticos():
+    return render_template('PUMAPS_Turisticos.html')
 
 
 app_dash.layout = html.Div(children=[html.Div([dcc.Location(id='url', refresh=True),
