@@ -95,7 +95,7 @@ def update_location(location):
      pass
 
 @server.app_dash.callback(Output("points-id","children"),
-                          Output("Info-id","children")
+                          Output("Info-id","children"),
                           Input("ver-id","n_clicks"),
                           State("dropdown-int","value"))
 def view_point(btn, point):
