@@ -41,6 +41,7 @@ def create_layout():
             id="dropdown-int",
             options=opcI,
             placeholder='Seleccione un sitio de interés',
+            value='todo'
             )
 
     destino = dcc.Dropdown(
@@ -49,6 +50,7 @@ def create_layout():
                 {"label": 'Ubicación actual', "value": 'ubi'}
             ],
             placeholder='Seleccione un punto de origen',
+            value='ubi'
             )
 
     layout = html.Div([
@@ -106,8 +108,17 @@ def update_location(location):
                           Output("Info-id","children"),
                           Input("ver-id","n_clicks"),
                           State("dropdown-int","value"), 
-                          prevent_initial_call=True)
+                          prevent_initial_call=True
+                          )
 def view_point(btn, point):
+    icon = {
+            "iconUrl": '/static/assets/target.png',
+            "iconSize": [38, 38],  # size of the icon
+            #"popupAnchor": [-3, -76]  # point from which the popup should open relative to the iconAnchor
+           }
+    
+    child = [html.H4('Detalles:'),html.H6('Los sitios de interes corresponden a lugares donde se pueden realizar actividades academicas y culturales de indole extracurricular blablablabla blabalbalb alabklalbalba lbalablaba blablaba lbalbal')]
+
     ls = []
     if point != 'todo':
         datF = df[df.sitio==point].copy()
@@ -117,23 +128,17 @@ def view_point(btn, point):
                            href=datF['link'].iloc[0], target="_blank")]
     else:
         datF = df.copy()
-        child = [html.H4('Detalles:'),html.H6('Los sitios de interes corresponden a lugares donde se pueden realizar actividades academicas y culturales de indole extracurricular blablablabla blabalbalb alabklalbalba lbalablaba blablaba lbalbal')]
 
     for row in datF.itertuples():
         ls.append(dict(name=row.sitio, lat=row.lat, lon=row.lon))
 
-    geojson = dlx.dicts_to_geojson([{**c, **dict(tooltip=c['name'])} for c in ls])
-
-    draw_icon = assign("""function(feature, latlng){
-                        const flag = L.icon({iconUrl: `/static/assets/target.png`, iconSize: [30, 30]});
-                        return L.marker(latlng, {icon: flag});
-                        }""")
+    markers =[dl.Marker(position=[c['lat'], c['lon']], icon=icon, children=dl.Popup(c['name']) ) for c in ls]
 
     del datF, ls
 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
     if 'ver-id' in changed_id:
-        return dl.GeoJSON(data=geojson,options=dict(pointToLayer=draw_icon),zoomToBounds=True, id="geojson"), child
+        return markers, child 
     else:
         return None,None
 

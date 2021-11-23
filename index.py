@@ -56,4 +56,4 @@ def display_page(pathname):
 
 if __name__ == "__main__":
     app.secret_key = 'i61yFyvwheKB5v7XHn9zzOZurmDwPNJ_NS07YXpJH66Lk7fS8XNpRChBg_EuDN7R1_vmOvhXstpE5V23txGzjg'
-    app.run(port=3333, use_reloader=True, threaded=True)
+    app.run(port=8000, use_reloader=True, threaded=True)
