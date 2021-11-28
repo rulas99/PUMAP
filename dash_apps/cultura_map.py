@@ -15,13 +15,15 @@ from dash_apps.auxiliar_functions.mongo import getDataFromMongo
 from dash_apps.auxiliar_functions.routes import get_hibryd_route, nodes, edges, G
 from dash_apps.auxiliar_functions.html_parser import html_to_dash
 
+
 from pandas import DataFrame
 
-df = DataFrame(getDataFromMongo('geometries','interes'))
+df = DataFrame(getDataFromMongo('geometries','cultura'))
 
 opcI = [{"label":i, "value":i} for i in df.Lugar] + [{"label":"TODOS", "value":"todo"}]
 
-startText = getDataFromMongo('tabular','descriptions',query={'ID':6})[0]['HTML']
+startText = getDataFromMongo('tabular','descriptions',query={'ID':7})[0]['HTML']
+
 
 def create_layout():
 
@@ -29,26 +31,26 @@ def create_layout():
     attribution = "<a href=https://www.google.com/maps/@24,-101.4,3274426m/data=!3m1!1e3/>Google Maps</a>"
 
     mapa = dl.Map([dl.TileLayer(url=url, maxZoom=20, attribution=attribution),          
-                 dl.LayerGroup(id="routes-id", children=[]),
-                 dl.LayerGroup(id="points-id", children=[]),
+                 dl.LayerGroup(id="routes-c", children=[]),
+                 dl.LayerGroup(id="points-c", children=[]),
                  dl.LocateControl(options={'locateOptions': {'enableHighAccuracy': True},'position':"bottomleft","drawCircle":False,
                                            'markerStyle':{'fillColor':'#38C8AE'}}),
                  dl.MeasureControl(position="bottomleft", primaryLengthUnit="meters", secondaryLengthUnit='kilometers', 
                                    primaryAreaUnit="sqmeters",secondaryAreaUnit="hectares",
                                    activeColor="#214097", completedColor="#972158")],
-                 id="map-id", style={'width': '100%', 'height': '560px', 'margin': "auto", "display": "block"},
+                 id="map-c", style={'width': '100%', 'height': '560px', 'margin': "auto", "display": "block"},
                  zoom=13.5, center=(19.32,-99.186), zoomControl=False
                  )
 
     origen = dcc.Dropdown(
-            id="dropdown-int",
+            id="dropdown-c",
             options=opcI,
             placeholder='Seleccione un sitio de interés',
             value='todo'
             )
 
     destino = dcc.Dropdown(
-            id="dropdown-ori",
+            id="dropdown-ori-c",
             options=[
                 {"label": 'Ubicación actual', "value": 'ubi'}
             ],
@@ -57,12 +59,12 @@ def create_layout():
             )
 
     layout = html.Div([
-                        dbc.Row([dbc.Col(html.Div([html.H6('Sitio de interés'),origen],
+                        dbc.Row([dbc.Col(html.Div([html.H6('Centros culturales'),origen],
                                          style={'padding': '1px 1px 15px 1px', 'text-align': 'center',
                                                 'background': None, 'margin': '2px 2px 2px 2px',
                                                 'position': 'relative', 'zIndex': 999}),sm=3),
 
-                                dbc.Col(html.Div([html.A(dbc.Button('Ver en mapa!', id='ver-id', color='secondary', className='mr-1',
+                                dbc.Col(html.Div([html.A(dbc.Button('Ver en mapa!', id='ver-c', color='secondary', className='mr-1',
                                         size='md', style={'width': '130px','height': '40px','backgroundColor': '#31C4A5','border-color': '#2BD3BE'}, n_clicks=0))],
                                         style={'padding': '23px 1px 15px 1px', 'text-align': 'center',
                                                'margin': '2px 2px 2px 2px'}), sm=3),
@@ -71,31 +73,31 @@ def create_layout():
                                         style={'padding': '1px 1px 15px 1px', 'text-align': 'center',
                                                'background': None, 'margin': '2px 2px 2px 2px'}),sm=3), 
 
-                                dbc.Col(html.Div([html.A(dbc.Button('Calcular!', id='calcula-id', color='secondary', className='mr-1',
+                                dbc.Col(html.Div([html.A(dbc.Button('Calcular!', id='calcula-c', color='secondary', className='mr-1',
                                 size='md', style={'width': '130px','height': '40px','backgroundColor': '#31C4A5','border-color': '#2BD3BE'}, n_clicks=0))],
                                 style={'padding': '23px 1px 15px 1px', 'text-align': 'center',
                                        'margin': '2px 2px 2px 2px'}), sm=3)
 
                                 ], no_gutters=True, justify='center'),
 
-                        dbc.Row([dbc.Col([html.Div([mapa], id="graph-map-id",
+                        dbc.Row([dbc.Col([html.Div([mapa], id="graph-map-c",
                                                   style={'padding': '3px 3px 3px 3px', 'text-align': 'center','background': None, 
                                                          'margin': '2px 2px 2px 2px','border':'1px gray solid',
                                                          'border-radius' : '7px'})],sm=10),
 
-                                dbc.Col([html.Div(children=html_to_dash(startText)
-                                    ,id="Info-id",style={'padding': '3px 5px 3px 3px', 'text-align': 'left','background': None, 
+                                dbc.Col([html.Div(children=html_to_dash(startText),
+                                    id="Info-c",style={'padding': '3px 5px 3px 3px', 'text-align': 'left','background': None, 
                                                           'margin': '2px 10px 2px 10px','border':'1px gray solid', 'height': '568px',
                                                           'border-radius' : '7px',"overflow-y": "scroll" })],sm=2)
 
                                 ], no_gutters=True, justify='center'),
-                        html.Div(html.Span('',id='coords-id',style={'font-size':'8pt','color': '#989898'}),
+                        html.Div(html.Span('',id='coords-c',style={'font-size':'8pt','color': '#989898'}),
                             style={'padding': '0px 10px 3px 3px','text-align': 'left','background': None})])
 
     return layout
 
-@server.app_dash.callback(Output("coords-id", "children"), 
-                          Input("map-id", "location_lat_lon_acc"),)
+@server.app_dash.callback(Output("coords-c", "children"), 
+                          Input("map-c", "location_lat_lon_acc"),)
 def update_location(location):
     if location:
         ubi = location[0], location[1]
@@ -107,10 +109,10 @@ def update_location(location):
      pass
 
 
-@server.app_dash.callback(Output("points-id","children"),
-                          Output("Info-id","children"),
-                          Input("ver-id","n_clicks"),
-                          State("dropdown-int","value"), 
+@server.app_dash.callback(Output("points-c","children"),
+                          Output("Info-c","children"),
+                          Input("ver-c","n_clicks"),
+                          State("dropdown-c","value"), 
                           prevent_initial_call=True
                           )
 def view_point(btn, point):
@@ -121,7 +123,7 @@ def view_point(btn, point):
            }
     
     child = html_to_dash(startText)
-    
+
     ls = []
     if point != 'todo':
         datF = df[df.Lugar==point].copy()
@@ -141,21 +143,21 @@ def view_point(btn, point):
     del datF, ls
 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
-    if 'ver-id' in changed_id:
+    if 'ver-c' in changed_id:
         return markers, child 
     else:
         return None,None
 
 
-@server.app_dash.callback(Output("routes-id", "children"), 
-                          Input("calcula-id", "n_clicks"),
-                          State("dropdown-int", "value"),
-                          State("dropdown-ori", "value"))
+@server.app_dash.callback(Output("routes-c", "children"), 
+                          Input("calcula-c", "n_clicks"),
+                          State("dropdown-c", "value"),
+                          State("dropdown-ori-c", "value"))
 def get_route(btn, destino, origen):
 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
 
-    if ('calcula-id' in changed_id) and destino!='todo':
+    if ('calcula-c' in changed_id) and destino!='todo':
         datF = df[df.Lugar==destino].copy()
         lat = datF.Y.iloc[0]
         lon = datF.X.iloc[0]

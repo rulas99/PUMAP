@@ -10,9 +10,10 @@ def html_to_dash(p1):
     
     res = []
     for i in el.contents:
-        if 'href' in i.attrs:
-            res.append(getattr(html,i.name.title())(i.contents[0],href=i.attrs["href"],style={'color': '#1C71F4'},target="_blank"))
-        else:
-            res.append(getattr(html,i.name.title())(i.contents[0]))
+        if i.name:
+            if 'href' in i.attrs:
+                res.append(getattr(html,i.name.title())(i.contents[0],href=i.attrs["href"],style={'color': '#1C71F4'},target="_blank"))
+            else:
+                res.append(getattr(html,i.name.title())(i.contents[0]))
 
     return res

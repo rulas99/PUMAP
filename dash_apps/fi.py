@@ -24,6 +24,9 @@ opcI = [{"label":'Conjunto principal', "value":'principal'},
         {"label":'Conjunto anexo', "value":'anexo'},
         {"label":"Ambos", "value":"todo"}]
 
+
+startText = getDataFromMongo('tabular','descriptions',query={'ID':2})[0]['HTML']
+
 def create_layout():
 
     url = "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
@@ -65,12 +68,12 @@ def create_layout():
                         dbc.Row([dbc.Col(html.Div([html.H6('Conjuto'),origen],
                                          style={'padding': '1px 1px 15px 1px', 'text-align': 'center',
                                                 'background': None, 'margin': '2px 2px 2px 2px',
-                                                'position': 'relative', 'zIndex': 999}),sm=2),
+                                                'position': 'relative'}),sm=2),
 
                                 dbc.Col(html.Div([html.H6('Edficios'),edifcios],
                                          style={'padding': '1px 1px 15px 1px', 'text-align': 'center',
                                                 'background': None, 'margin': '2px 2px 2px 2px',
-                                                'position': 'relative', 'zIndex': 999}),sm=2),
+                                                'position': 'relative'}),sm=2),
 
                                 dbc.Col(html.Div([html.A(dbc.Button('Ver en mapa!', id='ver-fi', color='secondary', className='mr-1',
                                         size='md', style={'width': '130px','height': '40px','backgroundColor': '#31C4A5','border-color': '#2BD3BE'}, n_clicks=0))],
@@ -93,12 +96,7 @@ def create_layout():
                                                          'margin': '2px 2px 2px 2px','border':'1px gray solid',
                                                          'border-radius' : '7px'})],sm=10),
 
-                                dbc.Col([html.Div(children=html_to_dash('''<h4>Detalles:</h4>
-                                                                <p>Aquí juntamos información proporcionada por la Dirección General del Deporte Universitario con el fin de orientar a los estudiantes y, en general, a toda la comunidad, acerca de las actividades relativas a la práctica del deporte (actividades deportivas) y al empleo del tiempo libre (actividades recreativas) que se llevan a cabo en la UNAM. Puedes consultar:</p>
-                                                                <p>-Las diferentes disciplinas deportivas que se pueden practicar en Ciudad Universitaria</p>
-                                                                <p>-Horarios y Requisitos</p>
-                                                                <a href="https://www.w3schools.com/html/html_links.asp">link text</a>
-                                                                '''),
+                                dbc.Col([html.Div(children=html_to_dash(startText),
                                     id="Info-fi",style={'padding': '3px 5px 3px 3px', 'text-align': 'left','background': None, 
                                                           'margin': '2px 10px 2px 10px','border':'1px gray solid', 'height': '568px',
                                                           'border-radius' : '7px',"overflow-y": "scroll" })],sm=2)
@@ -149,23 +147,21 @@ def view_polygon(btn, comp, build):
             #"popupAnchor": [-3, -76]  # point from which the popup should open relative to the iconAnchor
            }
     
-    child = [html.H4('Detalles:'),html.H6('Los sitios de interes corresponden a lugares donde se pueden realizar actividades academicas y culturales de indole extracurricular blablablabla blabalbalb alabklalbalba lbalablaba blablaba lbalbal')]
+    child = html_to_dash(startText)
 
     ls = []
     if comp != 'todo':
         datF = df[df.cate==comp].copy()
         datF = df[df.Edificio==build].copy()
 
-        child = [html.H4('Detalles:')]
-        child += [html.H6(f'{i}: {datF[i].iloc[0]}') for i in datF.iloc[:,1:-3].columns]
-        #child += [html.A(html.H6('Mayor información', style={'color': '#1C71F4'}),href=datF['link'].iloc[0], target="_blank")]
+        child = html_to_dash(datF['HTML'].iloc[0])
     else:
         datF = df.copy()
 
     for row in datF.itertuples():
         ls.append({i:j for i,j in zip(datF.columns,row[1:])})
 
-    markers =[dl.Polygon(positions=c['geom'], children=dl.Popup(c['Descripción']) ) for c in ls]
+    markers =[dl.Polygon(positions=c['geom'], children=dl.Popup(c['Descripción']), color='#29D18F' ) for c in ls]
 
     del datF, ls
 
