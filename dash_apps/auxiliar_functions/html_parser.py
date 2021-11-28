@@ -4,7 +4,7 @@ from re import sub
 from dash import html
 
 def html_to_dash(p1):
-    p1 = p1.replace('\n','').strip()
+    p1 = p1.replace('\n','').replace('<p></p>','<p> </p>').replace('&nbsp;',' ').strip()
     p1 = sub(r'\  +','',p1)
     el = BeautifulSoup(p1, "html.parser")
     
