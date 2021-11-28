@@ -3,7 +3,7 @@ from dash_apps.auxiliar_functions.mongo import getDataFromMongo
 
 from networkx import Graph, dijkstra_path
 from scipy.spatial import cKDTree
-from numpy import array
+from numpy import array, linalg
 from pandas import DataFrame
 
 edges = DataFrame(getDataFromMongo('routes','edges'))
@@ -36,7 +36,7 @@ def findNearest(pt,nodes):
 
     dist, idx = btree.query(pt, k=1)
 
-    return idx, dist*(103*1000)
+    return idx, dist*(109*1000)
 
 
 def getRoute_graph(ori,dest):
@@ -53,7 +53,6 @@ def getRoute_graph(ori,dest):
     
     except:
         return []
-
 
 def get_hibryd_route(ubi, dest):
     idxO,distO = findNearest([ubi[1],ubi[0]],nodes)
@@ -79,5 +78,7 @@ def get_hibryd_route(ubi, dest):
     return pth
 
 
-
+def poly_distance(pth):
+    dist = round(sum([linalg.norm(array(pth[i])-array(pth[i+1])) for i in range(len(pth)) if i<len(pth)-1])*(109*1000))
+    return dist, round((dist/.90)/60)
 

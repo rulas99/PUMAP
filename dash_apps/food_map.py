@@ -14,7 +14,7 @@ from flask import session
 
 from dash_apps.auxiliar_functions.here_api import hereRequestRoutes
 from dash_apps.auxiliar_functions.mongo import getDataFromMongo
-from dash_apps.auxiliar_functions.routes import get_hibryd_route, nodes, edges, G
+from dash_apps.auxiliar_functions.routes import get_hibryd_route, nodes, edges, G, poly_distance
 from dash_apps.auxiliar_functions.html_parser import html_to_dash
 
 from pandas import DataFrame
@@ -38,7 +38,7 @@ def create_layout():
                  dl.MeasureControl(position="bottomleft", primaryLengthUnit="meters", secondaryLengthUnit='kilometers', 
                                    primaryAreaUnit="sqmeters",secondaryAreaUnit="hectares",
                                    activeColor="#214097", completedColor="#972158")],
-                 id="map-f", style={'width': '100%', 'height': '560px', 'margin': "auto", "display": "block"},
+                 id="map-f", style={'width': '100%', 'height': '550px', 'margin': "auto", "display": "block"},
                  zoom=13.5, center=(19.32,-99.186), zoomControl=False
                  )
 
@@ -64,19 +64,23 @@ def create_layout():
                                                 'background': None, 'margin': '2px 2px 2px 2px',
                                                 'position': 'relative', 'zIndex': 999}),sm=3),
 
-                                dbc.Col(html.Div([html.A(dbc.Button('Ver en mapa!', id='ver-f', color='secondary', className='mr-1',
+                                dbc.Col(html.Div([html.A(dbc.Button('Ver!', id='ver-f', color='secondary', className='mr-1',
                                         size='md', style={'width': '130px','height': '40px','backgroundColor': '#31C4A5','border-color': '#2BD3BE'}, n_clicks=0))],
                                         style={'padding': '23px 1px 15px 1px', 'text-align': 'center',
-                                               'margin': '2px 2px 2px 2px'}), sm=3),
+                                               'margin': '2px 2px 2px 2px'}), sm=2),
 
                                 dbc.Col(html.Div([html.H6('Ruta desde:'),destino],
                                         style={'padding': '1px 1px 15px 1px', 'text-align': 'center',
-                                               'background': None, 'margin': '2px 2px 2px 2px'}),sm=3), 
+                                               'background': None, 'margin': '2px 2px 2px 2px'}),sm=2), 
 
                                 dbc.Col(html.Div([html.A(dbc.Button('Calcular!', id='calcula-f', color='secondary', className='mr-1',
                                 size='md', style={'width': '130px','height': '40px','backgroundColor': '#31C4A5','border-color': '#2BD3BE'}, n_clicks=0))],
                                 style={'padding': '23px 1px 15px 1px', 'text-align': 'center',
-                                       'margin': '2px 2px 2px 2px'}), sm=3)
+                                       'margin': '2px 2px 2px 2px'}), sm=2),
+
+                                dbc.Col(html.Div(id='distime-f',
+                                        style={'padding': '30px 1px 15px 1px', 'text-align': 'left',
+                                               'background': None, 'margin': '2px 2px 2px 2px'}),sm=3)
 
                                 ], justify='center'),
 
@@ -87,7 +91,7 @@ def create_layout():
 
                                 dbc.Col([html.Div(children=html_to_dash(startText)
                                     ,id="Info-f",style={'padding': '3px 5px 3px 3px', 'text-align': 'left','background': None, 
-                                                          'margin': '2px 10px 2px 10px','border':'1px gray solid', 'height': '568px',
+                                                          'margin': '2px 10px 2px 10px','border':'1px gray solid', 'height': '558px',
                                                           'border-radius' : '7px',"overflow-y": "scroll" })],sm=2)
 
                                 ], justify='center'),
@@ -150,6 +154,7 @@ def view_point(btn, point):
 
 
 @server.app_dash.callback(Output("routes-f", "children"), 
+                          Output("distime-f", "children"),
                           Input("calcula-f", "n_clicks"),
                           State("dropdown-f", "value"),
                           State("dropdown-ori-f", "value"))
@@ -163,6 +168,7 @@ def get_route(btn, destino, origen):
         lon = datF.X.iloc[0]
 
         poly = get_hibryd_route(session['ubi'],[lat,lon])
+        dist, t = poly_distance(poly)
 
         #iconUrl = "/static/assets/paws.png"
         #marker = dict(rotate=True, markerOptions=dict(icon=dict(iconUrl=iconUrl, iconSize=[50,50])))
@@ -171,7 +177,7 @@ def get_route(btn, destino, origen):
                     dict(offset='5%', repeat='5%', )] #
         rotated_markers = dl.PolylineDecorator(positions=poly, patterns=patterns)
 
-        return rotated_markers
+        return rotated_markers, html.P(f'Aprox. {dist} metros en {t} min.',style={'font-size':'16px'})
 
     else:
      pass
