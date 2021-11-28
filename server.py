@@ -13,6 +13,7 @@ app_dash = dash.Dash(__name__, server=app,
             #prevent_initial_callbacks=True
             )
     
+app.secret_key = '\x9d!I\x00\xb8\xd6!\xc4#.\xb3cO\xc6\x02\x83k8\xd0'
 app_dash.config.suppress_callback_exceptions = True
 app_dash.title = 'Proyecto'
 
