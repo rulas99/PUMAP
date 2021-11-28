@@ -1,6 +1,8 @@
-import dash_html_components as html
+#import dash_html_components as html
+from dash import html
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
+#import dash_core_components as dcc
+from dash import dcc
 import dash_leaflet as dl
 import dash_leaflet.express as dlx
 from dash_extensions.javascript import assign
@@ -78,7 +80,7 @@ def create_layout():
                                 style={'padding': '23px 1px 15px 1px', 'text-align': 'center',
                                        'margin': '2px 2px 2px 2px'}), sm=3)
 
-                                ], no_gutters=True, justify='center'),
+                                ], justify='center'),
 
                         dbc.Row([dbc.Col([html.Div([mapa], id="graph-map-c",
                                                   style={'padding': '3px 3px 3px 3px', 'text-align': 'center','background': None, 
@@ -90,7 +92,7 @@ def create_layout():
                                                           'margin': '2px 10px 2px 10px','border':'1px gray solid', 'height': '568px',
                                                           'border-radius' : '7px',"overflow-y": "scroll" })],sm=2)
 
-                                ], no_gutters=True, justify='center'),
+                                ], justify='center'),
                         html.Div(html.Span('',id='coords-c',style={'font-size':'8pt','color': '#989898'}),
                             style={'padding': '0px 10px 3px 3px','text-align': 'left','background': None})])
 

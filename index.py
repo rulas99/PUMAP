@@ -1,10 +1,12 @@
 from flask import Flask, render_template
 from server import app, app_dash
-import dash_html_components as html
-import dash_core_components as dcc
 import dash_apps
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
+#import dash_html_components as html
+from dash import html
+#import dash_core_components as dcc
+from dash import dcc
 
 @app.route('/')
 def index():

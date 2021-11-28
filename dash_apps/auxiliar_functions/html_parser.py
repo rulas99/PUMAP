@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
-import dash_html_components as html
 from re import sub
-
+#import dash_html_components as html
+from dash import html
 
 def html_to_dash(p1):
     p1 = p1.replace('\n','').strip()
