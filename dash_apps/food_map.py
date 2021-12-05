@@ -132,6 +132,8 @@ def view_point(btn, point):
         datF = df[df.Lugar==point].copy()
         child = [html.H4('Detalles:')]
         child += [html.H6(f'{i}: {datF[i].iloc[0]}') for i in datF.iloc[:,1:-3].columns]
+        if datF['Estrellas'].iloc[0]!='no hay':
+            child += [html.H6(f'Estrellas: {datF.Estrellas.iloc[0]}')]
         if datF['LINK'].iloc[0]!='Sin link':
             child += [html.A(html.H6('Mayor información', style={'color': '#1C71F4'}),
                                href=datF['LINK'].iloc[0], target="_blank")]
