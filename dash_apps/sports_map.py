@@ -1,7 +1,5 @@
-#import dash_html_components as html
 from dash import html
 import dash_bootstrap_components as dbc
-#import dash_core_components as dcc
 from dash import dcc
 import dash_leaflet as dl
 import dash_leaflet.express as dlx
@@ -11,7 +9,6 @@ from dash import callback_context
 import server
 from flask import session
 
-from dash_apps.auxiliar_functions.here_api import hereRequestRoutes
 from dash_apps.auxiliar_functions.mongo import getDataFromMongo
 from dash_apps.auxiliar_functions.routes import get_hibryd_route, nodes, edges, G, poly_distance
 from dash_apps.auxiliar_functions.html_parser import html_to_dash
