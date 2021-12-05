@@ -80,5 +80,11 @@ def get_hibryd_route(ubi, dest):
 
 def poly_distance(pth):
     dist = round(sum([linalg.norm(array(pth[i])-array(pth[i+1])) for i in range(len(pth)) if i<len(pth)-1])*(109*1000))
-    return dist, round((dist/.90)/60)
+    return int(dist), int(round((dist/.90)/60))
+
+opcD = {'princi':[19.33119605, -99.18459609],
+        'anexo':[19.32722693, -99.1827927],
+        'mC':[19.33531763, -99.1807629],
+        'mU':[19.32458997, -99.17433434],
+        'mb':[19.32363581, -99.18857883]}
 

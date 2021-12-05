@@ -10,7 +10,7 @@ import server
 from flask import session
 
 from dash_apps.auxiliar_functions.mongo import getDataFromMongo
-from dash_apps.auxiliar_functions.routes import get_hibryd_route, nodes, edges, G, poly_distance
+from dash_apps.auxiliar_functions.routes import get_hibryd_route, nodes, edges, G, poly_distance, opcD
 from dash_apps.auxiliar_functions.html_parser import html_to_dash
 
 from pandas import DataFrame
@@ -48,7 +48,12 @@ def create_layout():
     destino = dcc.Dropdown(
             id="dropdown-ori",
             options=[
-                {"label": 'Ubicación actual', "value": 'ubi'}
+                {"label": 'Ubicación actual', "value": 'ubi'},
+                {"label": 'Conjunto Principal (FI)', "value": 'princi'},
+                {"label": 'Conjunto Anexo (FI)', "value": 'anexo'},
+                {"label": 'Metro Copilco', "value": 'mC'},
+                {"label": 'Metro Universidad', "value": 'mU'},
+                {"label": 'Metrobus CU', "value": 'mb'},
             ],
             placeholder='Seleccione un punto de origen',
             value='ubi'
@@ -163,7 +168,12 @@ def get_route(btn, destino, origen):
         lat = datF.Y.iloc[0]
         lon = datF.X.iloc[0]
 
-        poly = get_hibryd_route(session['ubi'],[lat,lon])
+        if origen == 'ubi':
+            ori = session['ubi']
+        else:
+            ori = opcD[origen]
+
+        poly = get_hibryd_route(ori,[lat,lon])
         dist, t = poly_distance(poly)
 
         #iconUrl = "/static/assets/paws.png"
