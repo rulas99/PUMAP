@@ -20,7 +20,7 @@ from pandas import DataFrame
 
 df = DataFrame(getDataFromMongo('geometries','food'))
 
-opcI = [{"label":i, "value":i} for i in df.Servicio] + [{"label":"Todos", "value":"todo"}]
+opcI = [{"label":i, "value":i} for i in df.Lugar] + [{"label":"Todos", "value":"todo"}]
 
 startText = getDataFromMongo('tabular','descriptions',query={'ID':3})[0]['HTML']
 
@@ -129,7 +129,7 @@ def view_point(btn, point):
 
     ls = []
     if point != 'todo':
-        datF = df[df.Servicio==point].copy()
+        datF = df[df.Lugar==point].copy()
         child = [html.H4('Detalles:')]
         child += [html.H6(f'{i}: {datF[i].iloc[0]}') for i in datF.iloc[:,1:-3].columns]
         if datF['LINK'].iloc[0]!='Sin link':
@@ -139,7 +139,7 @@ def view_point(btn, point):
         datF = df.copy()
 
     for row in datF.itertuples():
-        ls.append(dict(name=row.Servicio, lat=row.Y, lon=row.X))
+        ls.append(dict(name=row.Lugar, lat=row.Y, lon=row.X))
 
     markers =[dl.Marker(position=[c['lat'], c['lon']], icon=icon, children=dl.Popup(c['name']), autoPan=True) for c in ls]
 
@@ -162,7 +162,7 @@ def get_route(btn, destino, origen):
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
 
     if ('calcula-f' in changed_id) and destino!='todo':
-        datF = df[df.Servicio==destino].copy()
+        datF = df[df.Lugar==destino].copy()
         lat = datF.Y.iloc[0]
         lon = datF.X.iloc[0]
 
