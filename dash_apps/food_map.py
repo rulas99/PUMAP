@@ -19,9 +19,9 @@ from dash_apps.auxiliar_functions.html_parser import html_to_dash
 
 from pandas import DataFrame
 
-df = DataFrame(getDataFromMongo('geometries','salud'))
+df = DataFrame(getDataFromMongo('geometries','food'))
 
-opcI = [{"label":i, "value":i} for i in df.Servicio] + [{"label":"TODOS", "value":"todo"}]
+opcI = [{"label":i, "value":i} for i in df.Servicio] + [{"label":"Todos", "value":"todo"}]
 
 startText = getDataFromMongo('tabular','descriptions',query={'ID':3})[0]['HTML']
 
@@ -133,7 +133,7 @@ def view_point(btn, point):
         datF = df[df.Servicio==point].copy()
         child = [html.H4('Detalles:')]
         child += [html.H6(f'{i}: {datF[i].iloc[0]}') for i in datF.iloc[:,1:-3].columns]
-        if datF['LINK'].iloc[0]!='SIN LINK':
+        if datF['LINK'].iloc[0]!='Sin link':
             child += [html.A(html.H6('Mayor información', style={'color': '#1C71F4'}),
                                href=datF['LINK'].iloc[0], target="_blank")]
     else:
