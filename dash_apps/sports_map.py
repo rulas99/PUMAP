@@ -5,7 +5,6 @@ import dash_bootstrap_components as dbc
 from dash import dcc
 import dash_leaflet as dl
 import dash_leaflet.express as dlx
-from dash_extensions.javascript import assign
 from dash.dependencies import Input, Output, State
 from dash import callback_context
 
