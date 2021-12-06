@@ -182,14 +182,15 @@ def view_polygon(btn, comp, build):
                           Output("distime-fi", "children"),
                           Input("calcula-fi", "n_clicks"),
                           State("dropdown-fi", "value"),
-                          State("build-dropdown", "value"))
-def get_route(btn, destino, origen):
+                          State("build-dropdown", "value"),
+                          State("dropdown-ori-fi", "value"))
+def get_route(btn, conjunto, edificio,origen):
 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
 
-    if ('calcula-fi' in changed_id) and destino!='todo':
-        datF = df[df.cate==destino].copy()
-        datF = df[df.Edificio==origen].copy()
+    if ('calcula-fi' in changed_id) and conjunto!='todo':
+        datF = df[df.cate==conjunto].copy()
+        datF = df[df.Edificio==edificio].copy()
         pt = datF.point.iloc[0]
 
         if origen == 'ubi':
