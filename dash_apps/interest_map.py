@@ -33,7 +33,9 @@ def create_layout():
                                            'markerStyle':{'fillColor':'#38C8AE'}}),
                  dl.MeasureControl(position="bottomleft", primaryLengthUnit="meters", secondaryLengthUnit='kilometers', 
                                    primaryAreaUnit="sqmeters",secondaryAreaUnit="hectares",
-                                   activeColor="#214097", completedColor="#972158")],
+                                   activeColor="#214097", completedColor="#972158"),
+                 dl.GestureHandling(),
+                 dl.FeatureGroup(dl.EditControl(position="bottomleft",id="edit_control-i"))],
                  id="map-id", style={'width': '100%', 'height': '550px', 'margin': "auto", "display": "block"},
                  zoom=13.5, center=(19.32,-99.186), zoomControl=False
                  )
@@ -158,7 +160,8 @@ def view_point(btn, point):
                           Output("distime-id", "children"),
                           Input("calcula-id", "n_clicks"),
                           State("dropdown-int", "value"),
-                          State("dropdown-ori", "value"))
+                          State("dropdown-ori", "value"),
+                          prevent_initial_call=True)
 def get_route(btn, destino, origen):
 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
