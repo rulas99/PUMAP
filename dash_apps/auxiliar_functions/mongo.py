@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-client = MongoClient("mongodb+srv://RaulDelaRosa:Lepera69!@geometry.sopbp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://<user>:<password>!@geometry.sopbp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 
 def getDataFromMongo(db,coll,query={}):
